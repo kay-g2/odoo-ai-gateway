@@ -1,0 +1,185 @@
+{
+  "generator": "scripts/gen_signature_vectors.py",
+  "implementation": "odoo.tools.misc.hmac",
+  "python": "3.12.3",
+  "verified_with": [
+    "3.12.3",
+    "3.14.7"
+  ],
+  "scope": "odoo_ai-webhook",
+  "vectors": [
+    {
+      "name": "success_text",
+      "secret": "test-webhook-secret",
+      "request_uuid": "3f2b8a1e-5c4d-4e7f-9a0b-1c2d3e4f5a6b",
+      "llm_result_json": "{\"status\":\"success\",\"result\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Hello, world!\"}],\"provider_metadata\":{}}}",
+      "llm_error_json": "false",
+      "python_repr": "('odoo_ai-webhook', ('3f2b8a1e-5c4d-4e7f-9a0b-1c2d3e4f5a6b', {'status': 'success', 'result': {'role': 'assistant', 'content': [{'type': 'text', 'text': 'Hello, world!'}], 'provider_metadata': {}}}, False))",
+      "signature": "24e7bca3619ee5d65f11da7f57852d85ff6ff1e8616379f689f20287796a260b"
+    },
+    {
+      "name": "odoo_test_shape_no_status",
+      "secret": "secret",
+      "request_uuid": "uuid-1",
+      "llm_result_json": "{\"result\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Test conversation\"}],\"provider_metadata\":{}}}",
+      "llm_error_json": "false",
+      "python_repr": "('odoo_ai-webhook', ('uuid-1', {'result': {'role': 'assistant', 'content': [{'type': 'text', 'text': 'Test conversation'}], 'provider_metadata': {}}}, False))",
+      "signature": "02856dcc7a3880e0ff60ec71492cc84899b9d08b36d23c21c4717bad410caa53"
+    },
+    {
+      "name": "tool_call",
+      "secret": "another-test-secret",
+      "request_uuid": "0b9f7c1a-2222-4444-8888-aaaaaaaaaaaa",
+      "llm_result_json": "{\"status\":\"success\",\"result\":{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_call\",\"call_id\":\"call_abc\",\"name\":\"search_partners\",\"args\":{\"query\":\"Azure\",\"state\":\"draft\",\"ids\":[1,2,3],\"limit\":10,\"ratio\":0.5,\"flag\":true,\"none\":null}}],\"provider_metadata\":{\"provider\":\"openai\",\"model\":\"gpt-5-mini\"}}}",
+      "llm_error_json": "false",
+      "python_repr": "('odoo_ai-webhook', ('0b9f7c1a-2222-4444-8888-aaaaaaaaaaaa', {'status': 'success', 'result': {'role': 'assistant', 'content': [{'type': 'tool_call', 'call_id': 'call_abc', 'name': 'search_partners', 'args': {'query': 'Azure', 'state': 'draft', 'ids': [1, 2, 3], 'limit': 10, 'ratio': 0.5, 'flag': True, 'none': None}}], 'provider_metadata': {'provider': 'openai', 'model': 'gpt-5-mini'}}}, False))",
+      "signature": "c17c85022ccfd2baa1a085a1ac83189ea07cae0d8f48287a6cbebe83a7e1d7a2"
+    },
+    {
+      "name": "failure",
+      "secret": "abc",
+      "request_uuid": "fail-uuid",
+      "llm_result_json": "false",
+      "llm_error_json": "\"Provider error: 500 Internal Server Error\"",
+      "python_repr": "('odoo_ai-webhook', ('fail-uuid', False, 'Provider error: 500 Internal Server Error'))",
+      "signature": "f6adafe6ac91adc08986e331d1db5d5b44107bc786428688560b69c04a5875ca"
+    },
+    {
+      "name": "quotes_and_escapes",
+      "secret": "k",
+      "request_uuid": "q",
+      "llm_result_json": "{\"a\":\"it's\",\"b\":\"say \\\"hi\\\"\",\"c\":\"both ' and \\\"\",\"d\":\"back\\\\slash\",\"e\":\"line\\nbreak\\ttab\\rcr\",\"f\":\"\"}",
+      "llm_error_json": "false",
+      "python_repr": "('odoo_ai-webhook', ('q', {'a': \"it's\", 'b': 'say \"hi\"', 'c': 'both \\' and \"', 'd': 'back\\\\slash', 'e': 'line\\nbreak\\ttab\\rcr', 'f': ''}, False))",
+      "signature": "68113f44f00582d822c482b33b65a89bca8fe13879a04f86f36c11bedb9b197e"
+    },
+    {
+      "name": "control_chars",
+      "secret": "k",
+      "request_uuid": "c",
+      "llm_result_json": "{\"nul\":\"\\u0000\",\"us\":\"\\u001f\",\"del\":\"\",\"bell\":\"\\u0007\",\"esc\":\"\\u001b\"}",
+      "llm_error_json": "false",
+      "python_repr": "('odoo_ai-webhook', ('c', {'nul': '\\x00', 'us': '\\x1f', 'del': '\\x7f', 'bell': '\\x07', 'esc': '\\x1b'}, False))",
+      "signature": "7c28407cc8b1574107d05aa8ebbce680bb5df174d85a41bc1f8c3bb41dc4af1c"
+    },
+    {
+      "name": "unicode_printable",
+      "secret": "k",
+      "request_uuid": "u",
+      "llm_result_json": "{\"latin\":\"café ñandú\",\"cjk\":\"中文\",\"emoji\":\"🎉🚀\",\"greek\":\"Ω\",\"rtl\":\"שלום\"}",
+      "llm_error_json": "false",
+      "python_repr": "('odoo_ai-webhook', ('u', {'latin': 'café ñandú', 'cjk': '中文', 'emoji': '🎉🚀', 'greek': 'Ω', 'rtl': 'שלום'}, False))",
+      "signature": "af20eef4c8012512e2c468e0b93eead4e36d209f1834f64025633af0b90ce74f"
+    },
+    {
+      "name": "unicode_non_printable",
+      "secret": "k",
+      "request_uuid": "n",
+      "llm_result_json": "{\"nbsp\":\"a b\",\"zwsp\":\"​\",\"ls\":\" \",\"ps\":\" \",\"bom\":\"﻿\",\"pua\":\"\",\"soft_hyphen\":\"­\",\"c1\":\"\",\"unassigned\":\"͸\",\"plane16\":\"􏿿\",\"tag\":\"󠀁\",\"ideographic_space\":\"　\"}",
+      "llm_error_json": "false",
+      "python_repr": "('odoo_ai-webhook', ('n', {'nbsp': 'a\\xa0b', 'zwsp': '\\u200b', 'ls': '\\u2028', 'ps': '\\u2029', 'bom': '\\ufeff', 'pua': '\\ue000', 'soft_hyphen': '\\xad', 'c1': '\\x85', 'unassigned': '\\u0378', 'plane16': '\\U0010ffff', 'tag': '\\U000e0001', 'ideographic_space': '\\u3000'}, False))",
+      "signature": "ae03447eeecfe55345d78e2455a51a6088f6e8e7aac6309885b2fd237631fd1f"
+    },
+    {
+      "name": "numbers",
+      "secret": "k",
+      "request_uuid": "num",
+      "llm_result_json": "{\"zero\":0,\"neg\":-5,\"int\":1234567890,\"big_int\":123456789012345680000,\"f1\":0.1,\"f2\":1.5,\"f3\":-0.5,\"f4\":123.456,\"small\":0.0001,\"smaller\":0.00001,\"tiny\":1e-7,\"e15\":1000000000000000,\"e16\":10000000000000000,\"e21\":1e+21,\"huge\":1.5e+300,\"pi\":3.141592653589793,\"third\":0.3333333333333333,\"f_e22\":1.2345e+22,\"neg_small\":-2.5e-8}",
+      "llm_error_json": "false",
+      "python_repr": "('odoo_ai-webhook', ('num', {'zero': 0, 'neg': -5, 'int': 1234567890, 'big_int': 123456789012345680000, 'f1': 0.1, 'f2': 1.5, 'f3': -0.5, 'f4': 123.456, 'small': 0.0001, 'smaller': 1e-05, 'tiny': 1e-07, 'e15': 1000000000000000, 'e16': 10000000000000000, 'e21': 1e+21, 'huge': 1.5e+300, 'pi': 3.141592653589793, 'third': 0.3333333333333333, 'f_e22': 1.2345e+22, 'neg_small': -2.5e-08}, False))",
+      "signature": "a9e347f0bdaa04d9bc76afc1b087031f83fed18ba5b4ea2c9f3a6f305bab3cd8"
+    },
+    {
+      "name": "nested_and_empty",
+      "secret": "k",
+      "request_uuid": "nest",
+      "llm_result_json": "{\"list\":[],\"dict\":{},\"nested\":[[1,[2,[3]]],{\"a\":{\"b\":{\"c\":[true,false,null]}}}],\"single\":[1],\"mixed\":[1,\"two\",3.5,null,true,{\"k\":\"v\"}]}",
+      "llm_error_json": "false",
+      "python_repr": "('odoo_ai-webhook', ('nest', {'list': [], 'dict': {}, 'nested': [[1, [2, [3]]], {'a': {'b': {'c': [True, False, None]}}}], 'single': [1], 'mixed': [1, 'two', 3.5, None, True, {'k': 'v'}]}, False))",
+      "signature": "1984ad1e4f8421707a69a5fc8fbaa0b99c7ac47c1149e82e9d76062acf26f068"
+    },
+    {
+      "name": "key_order_integer_like",
+      "secret": "k",
+      "request_uuid": "order",
+      "llm_result_json": "{\"1\":\"one\",\"2\":\"two\",\"10\":\"ten\",\"b\":\"bee\",\"a\":\"ay\",\"-1\":\"neg\"}",
+      "llm_error_json": "false",
+      "python_repr": "('odoo_ai-webhook', ('order', {'1': 'one', '2': 'two', '10': 'ten', 'b': 'bee', 'a': 'ay', '-1': 'neg'}, False))",
+      "signature": "5e76786cc8c5f18f41d2ada1c797fd8986f4ac2203470b9bd45e78be591d4f87"
+    },
+    {
+      "name": "inline_data_image",
+      "secret": "k",
+      "request_uuid": "img",
+      "llm_result_json": "{\"status\":\"success\",\"result\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Here is your image\"},{\"type\":\"inline_data\",\"mimetype\":\"image/png\",\"data\":\"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==\"}],\"provider_metadata\":{}}}",
+      "llm_error_json": "false",
+      "python_repr": "('odoo_ai-webhook', ('img', {'status': 'success', 'result': {'role': 'assistant', 'content': [{'type': 'text', 'text': 'Here is your image'}, {'type': 'inline_data', 'mimetype': 'image/png', 'data': 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='}], 'provider_metadata': {}}}, False))",
+      "signature": "e7fb3c1fa8b0f408d40779d8eeb44c1a0600449f6b7e3f7f6b467de6384b06aa"
+    },
+    {
+      "name": "web_sources",
+      "secret": "k",
+      "request_uuid": "web",
+      "llm_result_json": "{\"status\":\"success\",\"result\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Odoo is an ERP [WEB_SOURCE:a1b2c3d4e5].\",\"sources\":{\"a1b2c3d4e5\":{\"url\":\"https://www.odoo.com/\",\"source_name\":\"odoo.com\"}}}],\"provider_metadata\":{}}}",
+      "llm_error_json": "false",
+      "python_repr": "('odoo_ai-webhook', ('web', {'status': 'success', 'result': {'role': 'assistant', 'content': [{'type': 'text', 'text': 'Odoo is an ERP [WEB_SOURCE:a1b2c3d4e5].', 'sources': {'a1b2c3d4e5': {'url': 'https://www.odoo.com/', 'source_name': 'odoo.com'}}}], 'provider_metadata': {}}}, False))",
+      "signature": "adf9a8190abc2f2a539c63b1b2fdc284633a7dec395a7d2e4dcf3e104025c3be"
+    },
+    {
+      "name": "unicode_secret",
+      "secret": "sécrèt-🔑",
+      "request_uuid": "sec",
+      "llm_result_json": "{\"result\":{\"role\":\"assistant\",\"content\":[],\"provider_metadata\":{}}}",
+      "llm_error_json": "false",
+      "python_repr": "('odoo_ai-webhook', ('sec', {'result': {'role': 'assistant', 'content': [], 'provider_metadata': {}}}, False))",
+      "signature": "9a89813ef81ed94e0e80621deea9878fa0cf48e9150e9eebca8a3c3a6f61515b"
+    },
+    {
+      "name": "error_with_quotes_and_unicode",
+      "secret": "k",
+      "request_uuid": "err",
+      "llm_result_json": "false",
+      "llm_error_json": "\"Claude API error 400: \\\"messages.0\\\" isn't valid — détails\\n\"",
+      "python_repr": "('odoo_ai-webhook', ('err', False, 'Claude API error 400: \"messages.0\" isn\\'t valid — détails\\n'))",
+      "signature": "a5eb4feb89b68b1b6befe9a8a3d4f25db8a187fc1eef6d6798f6d19fa2570b25"
+    },
+    {
+      "name": "null_error",
+      "secret": "k",
+      "request_uuid": "nullerr",
+      "llm_result_json": "{\"result\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"ok\"}],\"provider_metadata\":{}}}",
+      "llm_error_json": "null",
+      "python_repr": "('odoo_ai-webhook', ('nullerr', {'result': {'role': 'assistant', 'content': [{'type': 'text', 'text': 'ok'}], 'provider_metadata': {}}}, None))",
+      "signature": "0970ff0d15d6b4d979fe476db8ed544b9c150a9759ec1a89d4c437727c572a4f"
+    }
+  ],
+  "sanitize_vectors": [
+    {
+      "name": "sanitize_unicode_16_emoji",
+      "secret": "k",
+      "request_uuid": "s1",
+      "raw_llm_result_json": "{\"result\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Tired \\ud83e\\udee9 face, fingerprint \\ud83e\\udec6\"}],\"provider_metadata\":{}}}",
+      "sent_llm_result_json": "{\"result\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"Tired � face, fingerprint �\"}],\"provider_metadata\":{}}}",
+      "python_repr": "('odoo_ai-webhook', ('s1', {'result': {'role': 'assistant', 'content': [{'type': 'text', 'text': 'Tired � face, fingerprint �'}], 'provider_metadata': {}}}, False))",
+      "signature": "b3bf38aac9f90a4ffc99a04ec38619598644080771961cee6c5772476f5245ef"
+    },
+    {
+      "name": "sanitize_cjk_ext_i_unicode_15_1",
+      "secret": "k",
+      "request_uuid": "s2",
+      "raw_llm_result_json": "{\"result\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"\\ud87a\\udff0 ok 中\"}],\"provider_metadata\":{}}}",
+      "sent_llm_result_json": "{\"result\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"� ok 中\"}],\"provider_metadata\":{}}}",
+      "python_repr": "('odoo_ai-webhook', ('s2', {'result': {'role': 'assistant', 'content': [{'type': 'text', 'text': '� ok 中'}], 'provider_metadata': {}}}, False))",
+      "signature": "f707723956575075fcb5c8dd537ec5a381128b40aad75031561438c190974b1d"
+    },
+    {
+      "name": "sanitize_nul_and_lone_surrogate",
+      "secret": "k",
+      "request_uuid": "s3",
+      "raw_llm_result_json": "{\"result\":{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_call\",\"name\":\"t\",\"args\":{\"q\":\"a\\u0000b\\ud800c\"},\"call_id\":\"1\"}],\"provider_metadata\":{}}}",
+      "sent_llm_result_json": "{\"result\":{\"role\":\"assistant\",\"content\":[{\"type\":\"tool_call\",\"name\":\"t\",\"args\":{\"q\":\"a�b�c\"},\"call_id\":\"1\"}],\"provider_metadata\":{}}}",
+      "python_repr": "('odoo_ai-webhook', ('s3', {'result': {'role': 'assistant', 'content': [{'type': 'tool_call', 'name': 't', 'args': {'q': 'a�b�c'}, 'call_id': '1'}], 'provider_metadata': {}}}, False))",
+      "signature": "d4334d322e31c3771d6d54d88daebd7198bc13549e094c830e15d1b25c1e9ea9"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+# odoo-ai-gateway with OpenRouter as the only provider.
+# Secrets come from .env (see .env.example): OPENROUTER_API_KEY and ODOO_AI_ACCOUNT_TOKEN.
+
+auth:
+  accountTokens:
+    - ${ODOO_AI_ACCOUNT_TOKEN}
+
+providers:
+  openrouter:
+    apiKey: ${OPENROUTER_API_KEY}
+
+# Lightest to heaviest. "Think longer" in Odoo moves a job one tier up.
+tiers:
+  - { name: fast,     provider: openrouter, model: anthropic/claude-haiku-4.5,  effort: none }
+  - { name: balanced, provider: openrouter, model: anthropic/claude-sonnet-5.5, effort: low }
+  - { name: deep,     provider: openrouter, model: anthropic/claude-opus-5.5,   effort: high }
+
+routing:
+  usages:
+    channel_name: fast                 # chat titles
+    website_builder_css_polish: fast
+    website_builder_shapes: fast
+  features:
+    image_generation: { provider: openrouter, model: google/gemini-3.1-flash-image }
+  routes:
+    # Odoo stores 1536-dimension vectors.
+    1/get_embeddings: { provider: openrouter, model: openai/text-embedding-3-small }
+  default: balanced
+
+# Not routed here: 1/get_transcription (voice notes and call recordings) and
+# 1/get_realtime_session_token (live transcription, OpenAI only). See the README.

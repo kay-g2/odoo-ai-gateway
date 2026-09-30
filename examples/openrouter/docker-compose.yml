@@ -1,0 +1,11 @@
+services:
+  gateway:
+    image: ghcr.io/kay-g2/odoo-ai-gateway:latest
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${GATEWAY_PORT:-8080}:8080"
+    volumes:
+      - ./config.yaml:/app/gateway.config.yaml:ro
+    # On stop, the gateway finishes in-flight completions and webhook deliveries first (README, "Shutdown").
+    stop_grace_period: 25m

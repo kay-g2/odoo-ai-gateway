@@ -1,0 +1,77 @@
+# odoo-ai-gateway configuration. Copy to gateway.config.yaml.
+# Strings take ${ENV_VAR} and ${ENV_VAR:-default}. Keep secrets in the environment.
+
+server:
+  host: 0.0.0.0
+  port: 8080
+  completionTimeoutSeconds: 300   # upper bound for one completion (Odoo may send a smaller `timeout`)
+  # syncTimeoutSeconds: 60        # 1/get_completions_sync: Odoo stops waiting after 60 s
+  requestTimeoutSeconds: 120      # embeddings, transcription, realtime token
+
+auth:
+  # Token of the `odoo_ai` IAP account in Odoo (Settings > Technical > IAP > In-App Purchase
+  # Accounts). Odoo sends it as `account_token` on every call except the embedding-model listings
+  # and the usage report.
+  accountTokens:
+    - ${ODOO_AI_ACCOUNT_TOKEN}
+  # Signs the realtime `iap_transaction_token` (16 chars or more). Without it a random key is made
+  # per process, and tokens issued before a restart can no longer report usage.
+  # transactionTokenSecret: ${GATEWAY_TRANSACTION_SECRET}
+
+webhook:
+  maxAttempts: 4          # retries only when the POST never reached Odoo (connect errors, 429, 503)
+  initialBackoffMs: 500
+  timeoutSeconds: 300     # Odoo runs the tool batch inside the callback request
+  # allowedHosts: ["odoo.example.com", "*.odoo.com"]   # hosts allowed as webhook_url
+
+# Only the providers listed here are instantiated. Remove the ones you do not use.
+providers:
+  openai:     { apiKey: "${OPENAI_API_KEY}" }
+  claude:     { apiKey: "${ANTHROPIC_API_KEY}" }
+  gemini:     { apiKey: "${GEMINI_API_KEY}" }
+  grok:       { apiKey: "${XAI_API_KEY}" }
+  openrouter:
+    apiKey: "${OPENROUTER_API_KEY}"
+    headers: { HTTP-Referer: "https://odoo.example.com", X-Title: "Odoo AI Gateway" }
+
+# Lightest to heaviest. A job on a tier moves one row up when Odoo sends boost_reasoning ("Think
+# longer"); an inline entry, or the top tier, gets one effort level more instead.
+# Efforts: none, minimal, low, medium, high, xhigh, max.
+tiers:
+  - { name: fast,     provider: openai, model: gpt-5.6-luna, effort: none }
+  - { name: balanced, provider: openai, model: gpt-5.6,      effort: low }
+  - { name: deep,     provider: claude, model: claude-opus-5-5, effort: high }
+
+routing:
+  # Most specific wins: usages (exact) > agent (agent:* prefix) > features > routes > default.
+  usages:
+    channel_name: fast                                   # chat titles
+    ai_field: { provider: gemini, model: gemini-3.8-flash, effort: low }      # schema + web grounding
+    web_search: { provider: gemini, model: gemini-3.8-flash, effort: low }    # web search tool
+    ai_action: balanced                                  # server actions
+    esg_metrics: { provider: openai, model: gpt-5.6, effort: medium }
+    website_builder_css_polish: fast                     # "lowest reasoning level" passes
+    website_builder_shapes: fast
+    # `options` are checked at startup against the keys each adapter reads (README, "Per-entry options"):
+    # Claude prompt caching { prompt_cache: "1h" | false }, OpenAI { prompt_cache_key: "conversation" }...
+    agent:ai_website.ai_agent_website_builder: { provider: claude, model: claude-sonnet-5-5, effort: medium }
+  # Any other agent: `agent:<module.xmlid>` or `agent:custom`.
+  agent: balanced
+  features:
+    image_generation: { provider: gemini, model: gemini-3.1-flash-image }
+    web_grounding: { provider: gemini, model: gemini-3.8-flash, effort: low }
+  routes:
+    # Must produce 1536-d vectors (ai.embedding.embedding_vector is vector(1536)).
+    1/get_embeddings: { provider: openai, model: text-embedding-3-small }
+    # whisper-1 returns real WebVTT for call recordings; gpt-4o-transcribe has better text but no timings.
+    1/get_transcription: { provider: openai, model: whisper-1 }
+    # Mints the OpenAI Realtime client secret; the browser connects to OpenAI directly.
+    1/get_realtime_session_token: { provider: openai, model: gpt-4o-transcribe }
+  default: balanced
+
+embeddings:
+  # Other embedding models still served. To switch models: change 1/get_embeddings above, restart
+  # Odoo (it caches the model lists), then run the scheduled action "AI Embedding: Update deprecated
+  # embedding models" (daily by default) to move agents and re-embed sources.
+  additional: []
+  #  - { provider: gemini, model: gemini-embedding-001, name: gemini-embedding-001 }

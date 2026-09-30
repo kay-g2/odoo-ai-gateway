@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+gateway.config.yaml
+gateway.config.yml
+gateway.config.json
+.DS_Store
+# Local copies of the Odoo sources used as reference (not part of this project)
+/odoo/
+/enterprise/
+logs/
+# Local tooling state
+.serena/

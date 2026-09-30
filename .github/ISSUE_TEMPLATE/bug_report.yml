@@ -1,0 +1,29 @@
+name: Bug report
+description: The gateway misbehaves with Odoo or with a provider.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did in Odoo, what you expected, what happened instead.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Gateway version and how it runs
+      placeholder: "0.1.0, docker compose from examples/openrouter"
+    validations:
+      required: true
+  - type: input
+    id: job
+    attributes:
+      label: Provider, model and Odoo feature
+      placeholder: "openrouter, anthropic/claude-sonnet-5.5, agent chat with tools"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Gateway log lines
+      description: The JSON log lines around the failure. They never contain keys, but the error field of a failed call quotes the provider's error message, so read it before pasting.
+      render: json

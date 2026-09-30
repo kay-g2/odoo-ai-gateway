@@ -1,0 +1,56 @@
+{
+  "name": "odoo-ai-gateway",
+  "version": "0.1.0",
+  "description": "Self-hosted, open source drop-in replacement for ai.api.odoo.com (Odoo 20 Enterprise AI) built on Hono. Routes each Odoo AI job to OpenAI, Grok, Claude, Gemini or OpenRouter.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kay-g2/odoo-ai-gateway.git"
+  },
+  "homepage": "https://github.com/kay-g2/odoo-ai-gateway#readme",
+  "bugs": {
+    "url": "https://github.com/kay-g2/odoo-ai-gateway/issues"
+  },
+  "engines": {
+    "node": ">=26"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch --env-file-if-exists=.env src/index.ts",
+    "start": "node --env-file-if-exists=.env dist/index.js",
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "vectors": "ODOO_PATH=./odoo PY_NEWEST=python3.14 python3.12 scripts/gen_signature_vectors.py > test/fixtures/signature-vectors.json",
+    "docs:options": "tsx scripts/options-table.ts"
+  },
+  "keywords": [
+    "odoo",
+    "ai",
+    "gateway",
+    "hono",
+    "openai",
+    "anthropic",
+    "claude",
+    "gemini",
+    "grok",
+    "openrouter",
+    "iap"
+  ],
+  "dependencies": {
+    "@hono/node-server": "^2.1.2",
+    "hono": "^4.13.10",
+    "undici": "^7.30.0",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2"
+  }
+}

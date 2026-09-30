@@ -1,0 +1,13 @@
+.git
+.github
+node_modules
+dist
+docs
+examples
+logs
+odoo
+enterprise
+test
+.env
+.env.*
+gateway.config.yaml

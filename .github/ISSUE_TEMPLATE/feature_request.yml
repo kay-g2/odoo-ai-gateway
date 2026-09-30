@@ -1,0 +1,16 @@
+name: Feature request
+description: A provider, model, option or Odoo feature the gateway should support.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What you cannot do today
+      description: The Odoo feature or the routing you need, and what fails now.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you propose
+      description: Config shape, provider API to use, links to the provider documentation.
